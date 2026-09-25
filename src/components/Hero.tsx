@@ -160,7 +160,8 @@ export const Hero = () => {
               className="text-lg md:text-xl text-txt-secondary max-w-2xl leading-relaxed font-medium"
               variants={fadeVariants}
             >
-              Currently working as SDE 1 at <a href="https://deepklarity.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">DeepKlarity</a>. Hunting for security vulnerabilities and contributing to open-source projects in my free time. Passionate about building secure systems and scalable full-stack applications. Always eager to learn and explore new technologies. 
+              Currently working as SDE 1 at <a href="https://deepklarity.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">DeepKlarity</a>. Hunting for security vulnerabilities and contributing to open-source projects in my free time.
+               Passionate about building secure systems and scalable full-stack applications.
               
             </motion.p>
 

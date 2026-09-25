@@ -72,7 +72,7 @@ export const About = () => {
                 className="text-lg md:text-xl text-txt-secondary leading-relaxed font-light"
                 variants={itemVariants}
               >
-                I am a Computer Science graduate with a specialization in Cyber Security. Currently working as a AI Software Developer Engineer - I. I work on building scalable full-stack applications and Security infrastructure and automating security operations.
+                I am a Computer Science graduate with a specialization in Cyber Security. Currently working as a AI Software Developer Engineer - 1. I work on building scalable full-stack applications and Security infrastructure and automating security operations.
               </motion.p>
 
               <motion.p
@@ -86,14 +86,7 @@ export const About = () => {
                 className="text-lg md:text-xl text-txt-secondary leading-relaxed font-light"
                 variants={itemVariants}
               >
-                I focus on writing clean, maintainable code and securing it through rigorous input validation, RBAC implementation, and containerized deployments using Docker.
-              </motion.p>
-
-              <motion.p
-                className="text-lg md:text-xl text-txt-secondary leading-relaxed font-light"
-                variants={itemVariants}
-              >
-                My hackathon projects have been recognized with university awards and selected for patent filing, demonstrating my ability to build innovative solutions that solve real problems.
+                My hackathon project have been recognized with university award and selected for patent filing.
               </motion.p>
             </motion.div>
 
