@@ -87,10 +87,10 @@ export const Skills = () => {
             className="max-w-xl pl-6 border-l-2 border-accent relative"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-txt-primary mb-2">
-              Skills
+              Stack
             </h2>
             <p className="text-txt-secondary text-lg">
-              Tools and technologies I use to secure systems.
+              Tools and technologies I work with:
             </p>
           </motion.div>
 
