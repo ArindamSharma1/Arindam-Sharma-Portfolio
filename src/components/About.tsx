@@ -59,7 +59,7 @@ export const About = () => {
         >
           <motion.div variants={headerVariants} className="max-w-xl pl-6 border-l-2 border-accent relative">
             <h2 className="text-4xl md:text-5xl font-bold text-txt-primary mb-2">
-              Engineering <br /> Philosophy
+              About <br /> Me In Detail
             </h2>
           </motion.div>
 
@@ -72,14 +72,14 @@ export const About = () => {
                 className="text-lg md:text-xl text-txt-secondary leading-relaxed font-light"
                 variants={itemVariants}
               >
-                I am a Computer Science student at JUIT specializing in Cyber Security. My work spans from building scalable full-stack applications to hardening infrastructure and automating security operations.
+                I am a Computer Science graduate with a specialization in Cyber Security. Currently working as a AI Software Developer Engineer - I. I work on building scalable full-stack applications and Security infrastructure and automating security operations.
               </motion.p>
 
               <motion.p
                 className="text-lg md:text-xl text-txt-secondary leading-relaxed font-light"
                 variants={itemVariants}
               >
-                I have experience deploying SIEM systems like Wazuh and ELK for real-time threat detection, while also building live SaaS products using Next.js, FastAPI, and PostgreSQL.
+                I have experience deploying SIEM like Wazuh and ELK for threat detection, while also building live apps using NodeJs, Next.js, FastAPI, MySQL and PostgreSQL.
               </motion.p>
 
               <motion.p
