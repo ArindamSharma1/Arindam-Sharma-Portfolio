@@ -38,43 +38,39 @@ export const HERO_STATS = [
 export const PROJECTS = [
     {
         title: 'FolioGauge',
-        role: 'Full Stack Developer',
         context: 'SaaS Tool',
         image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop',
         tech: ['React', 'FastAPI', 'Supabase', 'PostgreSQL'],
         description:
-            'Most developers have no objective way to evaluate their portfolio UX. Built a SaaS tool that automatically evaluates performance and content using rule-based scoring.',
-        outcome: 'Provides actionable metrics for developers to improve their professional presence.',
+            'Many devs dont have a proper way to evaluate their portfolio UI/UX. So I built a SaaS tool that automatically evaluates performance and content using rule-based scoring.',
+        outcome: 'Gives actionable metrics for developers to improve their professional presence.',
         demo: 'https://folio-gauge.vercel.app/',
         repo: 'https://github.com/ArindamSharma1/FolioGauge',
     },
     {
         title: 'TGE Store',
-        role: 'Full Stack Developer',
         context: 'E-commerce Platform',
         image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=2340&auto=format&fit=crop',
         tech: ['Next.js', 'Shopify API', 'Docker', 'JWT'],
         description:
-            'Identified that original auth design exposed session tokens to client scripts. Rebuilt authentication using HTTP-only cookies and added RBAC middleware to enforce access control.',
-        outcome: 'Eliminated session theft risks and secured administrative routes.',
+            'An e-commerce fashion store built directly on Shopify API . Non techincal managers can manage products direclty from Shopify UI instead of keeping a backend engineer to update the backend to manage products',
+        outcome: 'Eliminated the need for creating full backend and work directly on shopify front for non techincal users and product management',
         demo: 'https://tge-store.vercel.app/',
         repo: 'https://github.com/ArindamSharma1/TGE_Store',
     },
     {
         title: 'Multi-Language Cloud LMS',
-        role: 'Full Stack Developer',
-        context: 'Patent-selected Project',
+        context: 'Multi Language Cloud Moodle',
         image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=2148&auto=format&fit=crop',
         tech: ['Moodle', 'MySQL', 'Cloud Deployment'],
         description:
-            'Found no access separation between admin and student roles in existing campus tools. Designed a custom RBAC system and deployed it on cloud infrastructure.',
+            'Reducing the friction and language barriers for students in online learning. Deployed a multi-language Moodle. Selected for Patent filling',
         outcome: 'Won 1st Prize at university hackathon; selected for patent filing.',
         demo: 'https://learn-vista-xi.vercel.app/',
         repo: 'https://github.com/ArindamSharma1/learn-vista',
     },
     {
         title: 'SOC Automation Lab',
-        role: 'Security Analyst',
         context: 'Home Security Lab',
         image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2340&auto=format&fit=crop',
         tech: ['Wazuh', 'ELK Stack', 'Python', 'Linux'],
@@ -85,7 +81,6 @@ export const PROJECTS = [
     },
     {
         title: 'Network Security Lab',
-        role: 'Network Security',
         context: 'Cisco Environment',
         image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop',
         tech: ['Cisco Packet Tracer', 'VLANs', 'ACLs', 'TCP/IP'],
@@ -95,7 +90,6 @@ export const PROJECTS = [
     },
     {
         title: 'Secure Steganography System',
-        role: 'Contributor',
         context: 'Cryptography Project',
         image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2340&auto=format&fit=crop',
         tech: ['Python', 'LSB Techniques', 'Encryption'],
@@ -106,7 +100,6 @@ export const PROJECTS = [
     },
     {
         title: 'Trading Bot',
-        role: 'Developer',
         context: 'CLI Tool',
         image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop',
         tech: ['Python', 'httpx', 'Binance API'],
