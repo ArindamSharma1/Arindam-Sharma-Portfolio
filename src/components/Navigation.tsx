@@ -1,112 +1,90 @@
-import { motion } from 'framer-motion';
-import { Github, Linkedin, Instagram } from 'lucide-react';
+import { useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 import { useScrollSection } from '../hooks/useScrollSection';
-// import ThemeToggle from "./ThemeToggle";
+import { useTheme } from '../hooks/useTheme';
+import { ScrollBar } from './ScrollBar';
 
 const navItems = [
-  { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
+  { id: 'projects', label: 'Work' },
   { id: 'skills', label: 'Stack' },
-  { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'education', label: 'Education' },
+  { id: 'certifications', label: 'Certs' },
   { id: 'contact', label: 'Contact' },
-];
-
-const socials = [
-  { icon: Github, href: 'https://github.com/ArindamSharma1', label: 'GitHub', target: '_blank' },
-  { icon: Linkedin, href: 'https://linkedin.com/in/arindam-sharma-ab4712251', label: 'LinkedIn', target: '_blank' },
 ];
 
 export const Navigation = () => {
   const activeSection = useScrollSection();
+  const { theme, toggle } = useTheme();
+  const [open, setOpen] = useState(false);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const themeButton = (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+      className="p-2 transition-colors hover:text-cobalt"
+    >
+      {theme === 'dark' ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
+    </button>
+  );
 
   return (
-    <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 
-      bg-primary/90 
-      backdrop-blur-md 
-      border-b border-primary-surface 
-      transition-colors duration-300"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="section-max-width section-padding py-4">
-        <div className="flex items-center justify-between">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-ink/15 bg-concrete/90 backdrop-blur">
+      <nav aria-label="Primary" className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
+        <a href="#home" className="link-plain font-display text-lg font-bold">
+          Arindam Sharma
+        </a>
 
-          {/* Logo */}
-          <motion.div
-            className="text-2xl font-bold text-txt-primary"
-            whileHover={{ scale: 1.05 }}
-          >
-            As.
-          </motion.div>
-
-          {/* Nav links */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item, index) => (
-              <div key={item.id} className="relative group">
-                <motion.button
-                  onClick={() => scrollToSection(item.id)}
-                  className={`nav-link relative z-10 ${activeSection === item.id
-                    ? 'text-accent'
-                    : 'text-txt-secondary hover:text-accent'
-                    }`}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+        <div className="flex items-center gap-2 md:gap-7">
+          <ul className="hidden items-center gap-7 md:flex">
+            {navItems.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  aria-current={activeSection === item.id ? 'true' : undefined}
+                  className={`link-plain font-display text-sm font-semibold ${
+                    activeSection === item.id ? 'text-cobalt' : 'text-ink'
+                  }`}
                 >
                   {item.label}
-                  {/* Hover Underline (only when not active) */}
-                  {activeSection !== item.id && (
-                    <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-accent/50 transition-all duration-300 group-hover:w-full" />
-                  )}
-                </motion.button>
-                {activeSection === item.id && (
-                  <motion.div
-                    layoutId="active-nav-underline"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </div>
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          {/* Social + Theme Toggle */}
-          <div className="flex items-center gap-4">
-            {socials.map((social, index) => {
-              const Icon = social.icon;
-              return (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="text-txt-secondary hover:text-accent transition-colors"
-                  whileHover={{ scale: 1.2, rotate: 12 }}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  target={social.target}
-                  rel={social.target === '_blank' ? 'noopener noreferrer' : undefined}
-                >
-                  <Icon size={20} />
-                </motion.a>
-              );
-            })}
+          {themeButton}
 
-            {/* <ThemeToggle /> */}
-          </div>
+          <button
+            type="button"
+            className="p-2 font-display text-sm font-semibold md:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((o) => !o)}
+          >
+            {open ? 'Close' : 'Menu'}
+          </button>
         </div>
-      </div>
-    </motion.nav>
+      </nav>
+
+      {open && (
+        <ul id="mobile-menu" className="border-t border-ink/15 bg-concrete px-5 pb-4 md:hidden">
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                onClick={() => setOpen(false)}
+                className="link-plain block border-b border-ink/10 py-3 font-display font-semibold"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <ScrollBar />
+    </header>
   );
 };

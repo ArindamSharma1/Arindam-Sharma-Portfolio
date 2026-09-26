@@ -1,113 +1,123 @@
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+/* Theme tokens as "R G B" so Tailwind opacity modifiers keep working. */
+:root {
+  --concrete: 228 232 234;
+  --paper: 245 247 247;
+  --ink: 14 26 36;
+  --slate: 84 98 110;
+  --cobalt: 42 59 216;
+  --cobalt-dark: 31 45 170;
+  color-scheme: light;
 }
 
-body {
-  font-family: 'Montserrat', sans-serif;
-  overflow-x: hidden;
-  background-color: #0f1115;
-  color: #eaeaf0;
-  @apply text-[0.95rem] leading-relaxed;
-}
-
-html,
-html.dark body {
-  background-color: #0f1115;
-  color: #eaeaf0;
+:root[data-theme='dark'] {
+  --concrete: 12 20 27;
+  --paper: 20 32 41;
+  --ink: 232 238 242;
+  --slate: 147 163 176;
+  --cobalt: 123 140 255;
+  --cobalt-dark: 160 172 255;
+  color-scheme: dark;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-concrete font-body text-lg leading-[1.65] text-ink antialiased transition-colors duration-300;
+  }
 
   h1,
   h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-display font-bold;
+  h3 {
+    @apply font-display font-bold tracking-tight;
   }
 
-  p {
-    @apply leading-relaxed;
+  a {
+    @apply underline decoration-cobalt/40 underline-offset-4 transition-colors hover:decoration-cobalt;
+  }
+
+  :focus-visible {
+    @apply outline outline-2 outline-offset-4 outline-cobalt;
+  }
+
+  ::selection {
+    @apply bg-ink text-paper;
   }
 }
 
 @layer components {
-  .section-padding {
-    @apply px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32;
+  .link-plain {
+    @apply no-underline hover:text-cobalt;
   }
 
-  .section-max-width {
-    @apply max-w-6xl mx-auto;
+  .field {
+    @apply w-full border border-ink/25 bg-paper px-4 py-3 font-body text-ink placeholder:text-slate/70 focus:border-cobalt;
   }
 
-  .container-center {
-    @apply flex items-center justify-center;
+  .chip {
+    @apply inline-flex items-center gap-1.5 border border-ink/30 px-3 py-1 font-display text-sm font-medium;
   }
 
-  .text-gradient {
-    @apply bg-gradient-to-r from-txt-primary via-secondary to-txt-primary bg-clip-text text-transparent;
+  .chip-button {
+    @apply chip cursor-pointer transition-colors hover:border-ink hover:bg-ink hover:text-paper;
   }
 
-  .button-primary {
-    @apply px-8 py-3 bg-accent hover:bg-accent-hover text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95;
-  }
-
-  .button-ghost {
-    @apply px-6 py-2 text-txt-secondary hover:text-accent transition-colors duration-300;
-  }
-
-  .nav-link {
-    @apply relative text-sm font-medium transition-colors duration-300;
-  }
-
-
-  .tech-icon {
-    @apply p-4 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-110 bg-primary-surface;
-  }
-
-  .scroll-fade-in {
-    @apply opacity-0;
-  }
-
-  .scroll-fade-in.visible {
-    @apply opacity-100 transition-opacity duration-700;
+  .chip-button[aria-pressed='true'] {
+    @apply border-ink bg-ink text-paper;
   }
 }
 
-::selection {
-  @apply bg-accent text-white;
+/* The one orchestrated moment: a redaction bar that lifts off the headline. */
+.redact {
+  position: relative;
+  display: inline-block;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
+.redact::after {
+  content: '';
+  position: absolute;
+  inset: 0.08em 0 0.04em;
+  background: rgb(var(--ink));
+  transform-origin: right center;
+  animation: unredact 0.9s cubic-bezier(0.7, 0, 0.2, 1) 0.9s forwards;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-primary;
+@keyframes unredact {
+  to {
+    transform: scaleX(0);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-accent rounded-full;
+/* Shows what changed when a preview swaps. */
+.swap {
+  animation: swap 0.28s ease-out;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent-hover;
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
-/* Hide default cursor */
-/* * {
-  cursor: none !important;
-} */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-/* Smooth theme transition */
-html,
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  .redact::after {
+    animation: none;
+    transform: scaleX(0);
+  }
+
+  .swap {
+    animation: none;
+  }
 }

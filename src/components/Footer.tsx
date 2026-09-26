@@ -1,94 +1,22 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Heart } from 'lucide-react';
 import { SOCIALS } from '../constants';
 
-const socials = SOCIALS;
-
-export const Footer = () => {
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  return (
-    <footer
-      className="bg-primary-surface text-txt-primary section-padding pb-8"
-      ref={ref}
-    >
-      <div className="section-max-width">
-        <motion.div
-          className="space-y-16"
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          <motion.div variants={itemVariants} className="max-w-2xl">
-            <h2 className="text-5xl md:text-6xl font-black tracking-tight mb-8">
-              Building secure systems <br/><span className="text-accent">and scalable applications.</span>
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {socials.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="flex items-center gap-2 px-5 py-3 rounded-md bg-white/5 hover:bg-white/10 text-txt-primary border border-white/5 transition-all group"
-                    whileHover={{ y: -2 }}
-                  >
-                    <Icon size={18} className="text-secondary group-hover:text-accent transition-colors" />
-                    <span className="font-medium text-sm">{social.label}</span>
-                  </motion.a>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-txt-secondary text-sm"
-            variants={itemVariants}
-          >
-            <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <span>&copy; {new Date().getFullYear()} Arindam Sharma.</span>
-            </div>
-            <div className="flex items-center gap-6">
-              {['Home', 'Projects', 'Contact'].map(
-                (link) => (
-                  <a
-                    key={link}
-                    href={`#${link.toLowerCase()}`}
-                    className="hover:text-accent transition-colors"
-                  >
-                    {link}
-                  </a>
-                )
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </footer>
-  );
-};
+export const Footer = () => (
+  <footer className="bg-ink text-paper">
+    <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 sm:px-8 md:flex-row md:items-center md:justify-between">
+      <p className="font-display text-sm">&copy; {new Date().getFullYear()} Arindam Sharma</p>
+      <ul className="flex gap-6 font-display text-sm font-semibold">
+        {SOCIALS.map((s) => (
+          <li key={s.label}>
+            <a
+              href={s.href}
+              className="link-plain !text-paper hover:!text-concrete hover:underline"
+              {...(s.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </footer>
+);

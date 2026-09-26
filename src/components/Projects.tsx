@@ -1,187 +1,147 @@
-import { motion, Variants } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { ExternalLink, Github, ArrowUpRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { PROJECTS, TAGS, Project, Tag } from '../constants';
+import { Section } from './Section';
 
-import { PROJECTS } from '../constants';
+const Detail = ({ project }: { project: Project }) => (
+  <div key={project.title} className="swap">
+    {project.image ? (
+      <img
+        src={project.image}
+        alt={`Screenshot of ${project.title}`}
+        width={640}
+        height={400}
+        loading="lazy"
+        decoding="async"
+        className="aspect-[8/5] w-full border border-ink/20 object-cover object-top"
+      />
+    ) : (
+      <div className="flex aspect-[8/5] w-full items-end border border-ink/20 bg-ink p-5 text-paper">
+        <span className="font-display text-3xl font-bold leading-tight">{project.title}</span>
+      </div>
+    )}
 
-const projects = PROJECTS;
+    <p className="mt-5 text-xl leading-snug">{project.summary}</p>
+    <p className="mt-2 font-semibold">{project.result}</p>
 
-const ProjectCard = ({
-	project,
-	index,
-}: {
-	project: (typeof projects)[0];
-	index: number;
-}) => {
-	const cardVariants: Variants = {
-		hidden: { opacity: 0, scale: 0.9, y: 50 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			y: 0,
-			transition: {
-				duration: 0.8,
-				ease: [0.22, 1, 0.36, 1], // "Premium" ease
-			},
-		},
-	};
+    <ul className="mt-5 flex flex-wrap gap-2">
+      {project.tech.map((t) => (
+        <li key={t} className="chip">
+          {t}
+        </li>
+      ))}
+    </ul>
 
-	return (
-		<motion.div
-			className="group flex flex-col h-full bg-primary-surface border border-white/5 hover:border-accent/20 transition-colors rounded-lg overflow-hidden"
-			variants={cardVariants}
-			whileHover={{ y: -8, transition: { duration: 0.3, ease: 'easeOut' } }}
-		>
-			<div className="relative aspect-video overflow-hidden">
-				<motion.img
-					src={project.image}
-					alt={project.title}
-					className="w-full h-full object-cover"
-					whileHover={{ scale: 1.08 }} // Framer Motion for smoother scale
-					transition={{ duration: 0.6, ease: "easeOut" }}
-					loading="lazy"
-					decoding="async"
-				/>
-				<div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-300" />
-			</div>
+    {(project.demo || project.repo) && (
+      <ul className="mt-5 flex gap-6 font-display font-semibold">
+        {project.demo && (
+          <li>
+            <a href={project.demo} target="_blank" rel="noopener noreferrer">
+              Open live site<span className="sr-only"> for {project.title}</span>
+            </a>
+          </li>
+        )}
+        {project.repo && (
+          <li>
+            <a href={project.repo} target="_blank" rel="noopener noreferrer">
+              View source<span className="sr-only"> for {project.title}</span>
+            </a>
+          </li>
+        )}
+      </ul>
+    )}
+  </div>
+);
 
-			<div className="p-6 flex flex-col flex-grow relative">
-				{/* Context Line */}
-				<div className="flex items-center justify-between mb-3">
-					<span className="text-xs font-medium text-accent uppercase tracking-wider">
-						{project.context}
-					</span>
-					<span className="text-xs text-txt-secondary/60">
-						{project.role}
-					</span>
-				</div>
+interface ProjectsProps {
+  techFilter: string | null;
+  onClearTech: () => void;
+}
 
-				<h3 className="text-2xl font-bold text-txt-primary mb-3 group-hover:text-accent transition-colors flex items-center gap-2">
-					{project.title}
-					<ArrowUpRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-accent" />
-				</h3>
+export const Projects = ({ techFilter, onClearTech }: ProjectsProps) => {
+  const [tag, setTag] = useState<Tag | 'All'>('All');
+  const [activeTitle, setActiveTitle] = useState<string | null>(null);
 
-				<p className="text-txt-secondary text-sm leading-relaxed mb-4 flex-grow">
-					{project.description}
-				</p>
+  // A tool picked in Stack replaces any category filter.
+  useEffect(() => {
+    if (techFilter) setTag('All');
+  }, [techFilter]);
 
-				<div className="mb-6">
-					<p className="text-sm font-medium text-txt-primary border-l-2 border-accent pl-3 py-1 bg-accent/5">
-						<span className="opacity-70 text-xs uppercase block mb-1">Outcome</span>
-						{project.outcome}
-					</p>
-				</div>
+  const visible = PROJECTS.filter(
+    (p) =>
+      (tag === 'All' || p.tags.includes(tag)) &&
+      (!techFilter || p.tech.some((t) => t.toLowerCase() === techFilter.toLowerCase()))
+  );
+  const active = visible.find((p) => p.title === activeTitle) ?? visible[0];
 
-				<div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-					<div className="flex flex-wrap gap-2">
-						{project.tech.slice(0, 3).map((tech) => (
-							<span
-								key={tech}
-								className="text-xs text-txt-secondary font-medium"
-							>
-								{tech}
-							</span>
-						))}
-						{project.tech.length > 3 && (
-							<span className="text-xs text-txt-secondary font-medium opacity-60">
-								+{project.tech.length - 3} more
-							</span>
-						)}
-					</div>
-					<div className="flex items-center gap-3">
-						{project.demo && (
-							<a
-								href={project.demo}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="p-2 -m-2 text-txt-secondary hover:text-accent transition-colors relative z-20"
-								aria-label={`Open ${project.title} demo`}
-							>
-								<ExternalLink size={20} />
-							</a>
-						)}
-						{project.repo && (
-							<a
-								href={project.repo}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="p-2 -m-2 text-txt-secondary hover:text-accent transition-colors relative z-20"
-								aria-label={`Open ${project.title} repository`}
-							>
-								<Github size={20} />
-							</a>
-						)}
-					</div>
-				</div>
-			</div>
-		</motion.div>
-	);
-};
+  const count = (t: Tag) => PROJECTS.filter((p) => p.tags.includes(t)).length;
 
-export const Projects = () => {
-	const { ref, inView } = useInView({
-		threshold: 0.1,
-		triggerOnce: true,
-	});
+  return (
+    <Section id="projects" title="Work">
+      <div className="mb-8 flex flex-wrap items-center gap-2" role="group" aria-label="Filter projects by category">
+        <button type="button" className="chip-button" aria-pressed={tag === 'All'} onClick={() => setTag('All')}>
+          All {PROJECTS.length}
+        </button>
+        {TAGS.map((t) => (
+          <button key={t} type="button" className="chip-button" aria-pressed={tag === t} onClick={() => setTag(t)}>
+            {t} {count(t)}
+          </button>
+        ))}
+        {techFilter && (
+          <button type="button" className="chip-button !border-cobalt !bg-cobalt !text-paper" onClick={onClearTech}>
+            Uses {techFilter}. Clear
+          </button>
+        )}
+      </div>
 
-	const containerVariants: Variants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.1,
-				delayChildren: 0.2,
-			},
-		},
-	};
+      {visible.length === 0 ? (
+        <p className="font-display text-xl font-semibold">
+          No projects match.{' '}
+          <button
+            type="button"
+            className="underline underline-offset-4"
+            onClick={() => {
+              setTag('All');
+              onClearTech();
+            }}
+          >
+            Show all projects
+          </button>
+        </p>
+      ) : (
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+          <ul>
+            {visible.map((p) => {
+              const isActive = p.title === active?.title;
+              return (
+                <li key={p.title} className="border-b border-ink/25">
+                  <button
+                    type="button"
+                    aria-expanded={isActive}
+                    onMouseEnter={() => setActiveTitle(p.title)}
+                    onFocus={() => setActiveTitle(p.title)}
+                    onClick={() => setActiveTitle(p.title)}
+                    className={`flex w-full items-baseline justify-between gap-4 py-4 text-left transition-[padding,color] duration-200 ${
+                      isActive ? 'pl-4 text-cobalt' : 'hover:pl-2'
+                    }`}
+                  >
+                    <span className="font-display text-2xl font-bold leading-tight md:text-4xl">{p.title}</span>
+                    <span className="shrink-0 font-display text-sm font-medium text-slate">{p.context}</span>
+                  </button>
+                  {isActive && (
+                    <div className="pb-6 lg:hidden">
+                      <Detail project={p} />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
 
-	const headerVariants: Variants = {
-		hidden: { opacity: 0, x: -20 },
-		visible: {
-			opacity: 1,
-			x: 0,
-			transition: { duration: 0.6 },
-		},
-	};
-
-	return (
-		<section
-			id="projects"
-			data-section="projects"
-			className="section-padding bg-primary"
-			ref={ref}
-		>
-			<div className="section-max-width">
-				<motion.div
-					className="space-y-16"
-					variants={containerVariants}
-					initial="hidden"
-					animate={inView ? 'visible' : 'hidden'}
-				>
-					<motion.div variants={headerVariants} className="max-w-xl pl-6 border-l-2 border-accent relative">
-						{/* Visual Signature */}
-						<h2 className="text-4xl md:text-5xl font-bold text-txt-primary mb-2">
-							Selected Work
-						</h2>
-						<p className="text-txt-secondary text-lg">
-							Building products that solve real problems.
-						</p>
-					</motion.div>
-
-					<motion.div
-						className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-						variants={containerVariants}
-					>
-						{projects.map((project, index) => (
-							<ProjectCard
-								key={project.title}
-								project={project}
-								index={index}
-							/>
-						))}
-					</motion.div>
-				</motion.div>
-			</div>
-		</section>
-	);
+          <div className="hidden lg:sticky lg:top-24 lg:block lg:self-start" aria-live="polite">
+            {active && <Detail project={active} />}
+          </div>
+        </div>
+      )}
+    </Section>
+  );
 };

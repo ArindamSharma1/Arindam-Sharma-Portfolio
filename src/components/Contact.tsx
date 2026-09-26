@@ -1,37 +1,59 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
+import { CONTACT_INFO, SOCIALS } from '../constants';
+import { Section } from './Section';
+
+type Status = 'idle' | 'sending' | 'success' | 'error';
+
+const useLocalTime = (timeZone: string) => {
+  const format = () =>
+    new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone }).format(new Date());
+  const [time, setTime] = useState(format);
+
+  useEffect(() => {
+    const id = setInterval(() => setTime(format()), 30_000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeZone]);
+
+  return time;
+};
+
+const CopyEmail = () => {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTACT_INFO.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = `mailto:${CONTACT_INFO.email}`;
+    }
+  };
+
+  return (
+    <button type="button" onClick={copy} className="group block text-left">
+      <span className="block break-all font-display text-3xl font-extrabold leading-tight transition-colors group-hover:text-cobalt md:text-5xl">
+        {CONTACT_INFO.email}
+      </span>
+      <span className="mt-2 block font-display text-sm font-semibold text-slate" role="status">
+        {copied ? 'Copied to clipboard' : 'Click to copy'}
+      </span>
+    </button>
+  );
+};
 
 export const Contact = () => {
-  const { ref, inView } = useInView({
-    threshold: 0.15,
-    triggerOnce: true,
-  });
-
   const formRef = useRef<HTMLFormElement>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [status, setStatus] = useState<Status>('idle');
+  const time = useLocalTime(CONTACT_INFO.timeZone);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
 
     setStatus('sending');
-
     try {
       await emailjs.sendForm(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
@@ -39,240 +61,70 @@ export const Contact = () => {
         formRef.current,
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
+      formRef.current.reset();
       setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setStatus('idle'), 5000);
     } catch (error) {
       console.error('EmailJS Error:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const headerVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   return (
-    <section
-      id="contact"
-      data-section="contact"
-      className="section-padding"
-      ref={ref}
-    >
-      <div className="section-max-width">
-        <motion.div
-          className="space-y-16"
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          <motion.div variants={headerVariants} className="max-w-xl pl-6 border-l-2 border-accent relative">
-            <h2 className="text-4xl md:text-5xl font-bold text-txt-primary mb-2">
-              Get In Touch
-            </h2>
-            <p className="text-txt-secondary text-lg">
-              Available for full-time roles and project collaborations.
-            </p>
-          </motion.div>
+    <Section id="contact" title="Contact" meta={`${CONTACT_INFO.location}, ${time} local time`}>
+      <p className="mb-6 font-display text-xl font-semibold">Open to full-time roles and collaborations.</p>
+      <CopyEmail />
 
-          <div className="grid md:grid-cols-2 gap-12">
-            <motion.div className="space-y-8" variants={containerVariants}>
-              <motion.div
-                className="p-6 rounded-lg bg-primary-surface border border-secondary/10 hover:border-accent/30 transition-colors"
-                variants={itemVariants}
-                whileHover={{ x: 8 }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-secondary/10 mt-1">
-                    <Mail size={20} className="text-secondary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-txt-primary">Email</h3>
-                    <a
-                      href={`mailto:sharmaarindam091@gmail.com`}
-                      className="text-accent hover:text-accent-dark transition-colors mt-1"
-                    >
-                      sharmaarindam091@gmail.com
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
+      <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-display font-semibold">
+        <li>
+          <a href={CONTACT_INFO.phoneHref}>{CONTACT_INFO.phone}</a>
+        </li>
+        {SOCIALS.filter((s) => s.label !== 'Email').map((s) => (
+          <li key={s.label}>
+            <a href={s.href} target="_blank" rel="noopener noreferrer">
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ul>
 
-              <motion.div
-                className="p-6 rounded-lg bg-primary-surface border border-secondary/10 hover:border-accent/30 transition-colors"
-                variants={itemVariants}
-                whileHover={{ x: 8 }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-secondary/10 mt-1">
-                    <Phone size={20} className="text-secondary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-txt-primary">Phone</h3>
-                    <a
-                      href="tel:+918580705992"
-                      className="text-accent hover:text-accent-hover transition-colors mt-1"
-                    >
-                      +91 85807 05992
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
+      <form ref={formRef} onSubmit={handleSubmit} className="mt-14 grid max-w-3xl gap-5 md:grid-cols-2">
+        <div>
+          <label htmlFor="user_name" className="mb-1 block font-display text-sm font-semibold">
+            Your name
+          </label>
+          <input id="user_name" name="user_name" type="text" autoComplete="name" required className="field" />
+        </div>
+        <div>
+          <label htmlFor="user_email" className="mb-1 block font-display text-sm font-semibold">
+            Your email
+          </label>
+          <input id="user_email" name="user_email" type="email" autoComplete="email" required className="field" />
+        </div>
+        <div className="md:col-span-2">
+          <label htmlFor="message" className="mb-1 block font-display text-sm font-semibold">
+            Message
+          </label>
+          <textarea id="message" name="message" rows={4} required className="field resize-y" />
+        </div>
 
-              <motion.div
-                className="p-6 rounded-lg bg-primary-surface border border-secondary/10 hover:border-accent/30 transition-colors"
-                variants={itemVariants}
-                whileHover={{ x: 8 }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-secondary/10 mt-1">
-                    <MapPin size={20} className="text-secondary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-txt-primary">Location</h3>
-                    <p className="text-txt-secondary mt-1">
-                      Solan, India
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-
-            <motion.form
-              ref={formRef}
-              className="space-y-6"
-              variants={containerVariants}
-              onSubmit={handleSubmit}
-            >
-              <motion.div variants={itemVariants}>
-                <label
-                  htmlFor="user_name"
-                  className="block text-sm font-semibold text-txt-primary mb-2"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="user_name"
-                  name="user_name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-lg bg-primary-surface border border-secondary/10 text-txt-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all placeholder:text-txt-secondary/50 relative z-10"
-                  required
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <label
-                  htmlFor="user_email"
-                  className="block text-sm font-semibold text-txt-primary mb-2"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="user_email"
-                  name="user_email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  className="w-full px-4 py-3 rounded-lg bg-primary-surface border border-secondary/10 text-txt-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all placeholder:text-txt-secondary/50 relative z-10"
-                  required
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-semibold text-txt-primary mb-2"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your message here..."
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-lg bg-primary-surface border border-secondary/10 text-txt-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none placeholder:text-txt-secondary/50 relative z-10"
-                  required
-                ></textarea>
-              </motion.div>
-
-              <motion.button
-                type="submit"
-                disabled={status === 'sending'}
-                className="button-primary flex items-center gap-2 group w-full justify-center disabled:opacity-70 disabled:cursor-not-allowed"
-                variants={itemVariants}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {status === 'sending' ? 'Sending...' : status === 'success' ? 'Message Sent!' : status === 'error' ? 'Failed to Send' : 'Send Message'}
-                <Send
-                  size={20}
-                  className={`group-hover:translate-x-1 transition-transform ${status !== 'idle' ? 'hidden' : ''
-                    }`}
-                />
-              </motion.button>
-
-              {status === 'success' && (
-                <motion.div
-                  className="p-4 rounded-lg bg-secondary/10 border border-green-500/50 text-green-400 text-center font-semibold"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  Thank you! I'll get back to you soon.
-                </motion.div>
-              )}
-              {status === 'error' && (
-                <motion.div
-                  className="p-4 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-center font-semibold"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  Something went wrong. Please try again later.
-                </motion.div>
-              )}
-            </motion.form>
-          </div>
-        </motion.div>
-        <motion.div
-          className="mt-12 text-center text-sm text-slate-500 flex justify-center"
-          variants={itemVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          {/*centered logo/link */}
-        </motion.div>
-      </div>
-    </section>
+        <div className="flex flex-wrap items-center gap-5 md:col-span-2">
+          <button
+            type="submit"
+            disabled={status === 'sending'}
+            className="bg-ink px-7 py-3 font-display font-semibold text-paper transition-colors hover:bg-cobalt disabled:opacity-60"
+          >
+            {status === 'sending' ? 'Sending message' : 'Send message'}
+          </button>
+          <p role="status" aria-live="polite" className="font-display text-sm font-semibold">
+            {status === 'success' && 'Message sent. I will reply by email.'}
+            {status === 'error' && (
+              <span className="text-red-700 dark:text-red-300">
+                The message did not send. Try again, or email me directly.
+              </span>
+            )}
+          </p>
+        </div>
+      </form>
+    </Section>
   );
 };
