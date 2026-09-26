@@ -59,11 +59,11 @@ export const Education = () => {
                   </div>
                   <div>
                     <h3 className="text-xl md:text-2xl font-bold text-txt-primary">
-                      B.Tech in Computer Science
+                      B.Tech in Computer Science Engineering
                     </h3>
                     <p className="text-accent font-semibold text-lg">Jaypee University of Information Technology (JUIT)</p>
                     <p className="text-txt-secondary mt-1">Cyber Security Specialization</p>
-                    <p className="text-txt-secondary text-sm mt-1">2022 — 2026</p>
+                    <p className="text-txt-secondary text-sm mt-1">2022 - 2026</p>
                   </div>
                 </div>
               </div>
@@ -84,7 +84,7 @@ export const Education = () => {
                   </div>
                   <div>
                     <p className="text-txt-primary font-medium">Patent Filed</p>
-                    <p className="text-txt-secondary text-sm">Project selected for patent filing by the university intellectual property cell.</p>
+                    <p className="text-txt-secondary text-sm">Project selected for patent filing by the university.</p>
                   </div>
                 </div>
               </div>

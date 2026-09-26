@@ -111,6 +111,13 @@ export const PROJECTS = [
 ];
 
 export const EXPERIENCES = [
+     {
+        company: 'DeepKlarity',
+        role: 'AI SDE 1',
+        duration: 'May 2026 - Present',
+        description: 'Working as an AI Software Development Engineer, building and helping with complex applications.',
+        skills: ['REST APIs', 'MySQL', 'Python', 'Node.js'],
+    },
     {
         company: 'ApexPlanet Technologies',
         role: 'Web Developer Intern',

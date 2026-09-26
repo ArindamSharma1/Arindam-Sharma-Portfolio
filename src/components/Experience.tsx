@@ -60,7 +60,7 @@ export const Experience = () => {
                             Experience
                         </h2>
                         <p className="text-txt-secondary text-lg">
-                            My professional journey.
+                            My hands on experience.
                         </p>
                     </motion.div>
 
