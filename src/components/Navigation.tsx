@@ -6,7 +6,7 @@ import { ScrollBar } from './ScrollBar';
 
 const navItems = [
   { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Work' },
+  { id: 'projects', label: 'Projects' },
   { id: 'skills', label: 'Stack' },
   { id: 'experience', label: 'Experience' },
   { id: 'education', label: 'Education' },

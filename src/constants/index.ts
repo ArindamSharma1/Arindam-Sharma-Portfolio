@@ -13,6 +13,8 @@ export interface Project {
     title: string;
     context: string;
     image?: string;
+    /** Drawn illustration used when there is no screenshot. */
+    art?: 'soc' | 'network' | 'stego' | 'trading';
     tags: Tag[];
     tech: string[];
     summary: string;
@@ -57,6 +59,7 @@ export const PROJECTS: Project[] = [
     },
     {
         title: 'SOC Automation Lab',
+        art: 'soc',
         context: 'Home security lab',
         tags: ['Security', 'Automation'],
         tech: ['Wazuh', 'ELK Stack', 'Python', 'Linux'],
@@ -66,6 +69,7 @@ export const PROJECTS: Project[] = [
     },
     {
         title: 'Network Security Lab',
+        art: 'network',
         context: 'Cisco environment',
         tags: ['Security'],
         tech: ['Cisco Packet Tracer', 'VLANs', 'ACLs', 'TCP/IP'],
@@ -74,6 +78,7 @@ export const PROJECTS: Project[] = [
     },
     {
         title: 'Secure Steganography',
+        art: 'stego',
         context: 'Cryptography project',
         tags: ['Security'],
         tech: ['Python', 'LSB Techniques', 'Encryption'],
@@ -83,6 +88,7 @@ export const PROJECTS: Project[] = [
     },
     {
         title: 'Trading Bot',
+        art: 'trading',
         context: 'CLI tool',
         tags: ['Automation'],
         tech: ['Python', 'httpx', 'Binance API'],

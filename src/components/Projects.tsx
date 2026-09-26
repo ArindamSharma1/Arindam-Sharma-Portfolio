@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PROJECTS, TAGS, Project, Tag } from '../constants';
+import { ProjectArt } from './ProjectArt';
 import { Section } from './Section';
 
 const Detail = ({ project }: { project: Project }) => (
@@ -14,6 +15,8 @@ const Detail = ({ project }: { project: Project }) => (
         decoding="async"
         className="aspect-[8/5] w-full border border-ink/20 object-cover object-top"
       />
+    ) : project.art ? (
+      <ProjectArt kind={project.art} />
     ) : (
       <div className="flex aspect-[8/5] w-full items-end border border-ink/20 bg-ink p-5 text-paper">
         <span className="font-display text-3xl font-bold leading-tight">{project.title}</span>
@@ -76,7 +79,7 @@ export const Projects = ({ techFilter, onClearTech }: ProjectsProps) => {
   const count = (t: Tag) => PROJECTS.filter((p) => p.tags.includes(t)).length;
 
   return (
-    <Section id="projects" title="Work">
+    <Section id="projects" title="Projects">
       <div className="mb-8 flex flex-wrap items-center gap-2" role="group" aria-label="Filter projects by category">
         <button type="button" className="chip-button" aria-pressed={tag === 'All'} onClick={() => setTag('All')}>
           All {PROJECTS.length}
@@ -120,11 +123,18 @@ export const Projects = ({ techFilter, onClearTech }: ProjectsProps) => {
                     onMouseEnter={() => setActiveTitle(p.title)}
                     onFocus={() => setActiveTitle(p.title)}
                     onClick={() => setActiveTitle(p.title)}
-                    className={`flex w-full items-baseline justify-between gap-4 py-4 text-left transition-[padding,color] duration-200 ${
-                      isActive ? 'pl-4 text-cobalt' : 'hover:pl-2'
+                    className={`group flex w-full items-baseline justify-between gap-4 py-4 text-left ${
+                      isActive ? 'text-cobalt' : ''
                     }`}
                   >
-                    <span className="font-display text-2xl font-bold leading-tight md:text-4xl">{p.title}</span>
+                    {/* Transform only, so the title never re-wraps when it moves. */}
+                    <span
+                      className={`font-display text-2xl font-bold leading-tight transition-transform duration-200 md:text-4xl ${
+                        isActive ? 'translate-x-3' : 'group-hover:translate-x-1.5'
+                      }`}
+                    >
+                      {p.title}
+                    </span>
                     <span className="shrink-0 font-display text-sm font-medium text-slate">{p.context}</span>
                   </button>
                   {isActive && (
